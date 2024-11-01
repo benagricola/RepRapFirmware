@@ -14,16 +14,19 @@
 #include <General/NamedEnum.h>
 
 NamedEnum(SpindleState, uint8_t, unconfigured, stopped, forward, reverse);
+NamedEnum(SpindleType, uint8_t, standard, fwdrev);
+
+const SpindleType DefaultSpindleType(SpindleType::standard);
 
 class Spindle INHERIT_OBJECT_MODEL
 {
 private:
 	void SetRpm(uint32_t rpm) noexcept;
-
 	PwmPort pwmPort, onOffPort, reverseNotForwardPort;
 	float minPwm, maxPwm, idlePwm;
 	uint32_t currentRpm, configuredRpm, minRpm, maxRpm;
 	PwmFrequency frequency;
+	SpindleType type;
 	SpindleState state;
 
 protected:
@@ -32,7 +35,7 @@ protected:
 public:
 	Spindle() noexcept;
 
-	GCodeResult Configure(GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeException);
+	GCodeResult Configure(uint32_t spindleNumber, GCodeBuffer& gb, const StringRef& reply) THROWS(GCodeException);
 
 	uint32_t GetCurrentRpm() const noexcept { return currentRpm; }
 	uint32_t GetMinRpm() const noexcept { return minRpm; }
@@ -40,6 +43,7 @@ public:
 	uint32_t GetRpm() const noexcept { return configuredRpm; }
 	bool IsValidRpm(uint32_t rpm) const noexcept { return rpm >= minRpm && rpm <= maxRpm; }
 	void SetConfiguredRpm(uint32_t rpm, bool updateCurrentRpm) noexcept;
+	SpindleType GetType() const noexcept { return type; }
 	SpindleState GetState() const noexcept { return state; }
 	void SetState(SpindleState newState) noexcept;
 };

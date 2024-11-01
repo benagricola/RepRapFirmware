@@ -3986,8 +3986,8 @@ GCodeResult Platform::ConfigurePort(GCodeBuffer& gb, const StringRef& reply) THR
 		}
 	case 32:	// R
 		{
-			const uint32_t slot = gb.GetLimitedUIValue('R', MaxSpindles);
-			return spindles[slot].Configure(gb, reply);
+			const uint32_t spindleNumber = gb.GetLimitedUIValue('R', MaxSpindles);
+			return spindles[spindleNumber].Configure(spindleNumber, gb, reply);
 		}
 
 #if SUPPORT_LED_STRIPS
