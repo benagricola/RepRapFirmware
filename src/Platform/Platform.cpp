@@ -1272,7 +1272,7 @@ float Platform::GetCpuTemperature() const noexcept
 # elif STM32
 	// VSENSE_CORRECTED = VSENSE*VRef/3.3
 	// TMCU = ((TSCAL2_TEMP - TSCAL1_TEMP)/(TSCAL2 - TSCAL1))*(VSENSE_CORRECTED - TSCAL1) + TSCAL1_TEMP
-	return ((110.0f - 30.0f)/(((float)(GET_ADC_CAL(TEMPSENSOR_CAL2_ADDR, TEMPSENSOR_CAL2_DEF))) - ((float)(GET_ADC_CAL(TEMPSENSOR_CAL1_ADDR, TEMPSENSOR_CAL1_DEF))))) * ((voltage*((float)(1u << 12))/3.3f)*vRefCorrection/VRefCorrectionScale - ((float)(GET_ADC_CAL(TEMPSENSOR_CAL1_ADDR, TEMPSENSOR_CAL1_DEF)))) + 30.0f + mcuTemperatureAdjust; 
+	return ((110.0f - 30.0f)/(((float)(GET_ADC_CAL(TEMPSENSOR_CAL2_ADDR, TEMPSENSOR_CAL2_DEF))) - ((float)(GET_ADC_CAL(TEMPSENSOR_CAL1_ADDR, TEMPSENSOR_CAL1_DEF))))) * ((voltage*((float)(1u << 12))/3.3f)*vRefCorrection/VRefCorrectionScale - ((float)(GET_ADC_CAL(TEMPSENSOR_CAL1_ADDR, TEMPSENSOR_CAL1_DEF)))) + 30.0f + mcuTemperatureAdjust;
 # else
 #  error undefined CPU temp conversion
 # endif
@@ -2122,7 +2122,7 @@ GCodeResult Platform::DiagnosticTest(GCodeBuffer& gb, const StringRef& reply, Ou
 #if STM32
 	// This code is now called directly from the gcode module to allow it to have access to the
 	// I/O stream with a push modifier (used for standard M122). Without this the output in DSF
-	// is split into multiple responses. 
+	// is split into multiple responses.
 #if 0
 	// Diagnostic for LPC board configuration
 	case (unsigned int)DiagnosticTestType::PrintBoardConfiguration:
@@ -2847,12 +2847,12 @@ GCodeResult Platform::ReceiveI2cOrModbus(GCodeBuffer& gb, const StringRef &reply
 						break;
 					}
 				}
-				else
+				else if(resultVar == nullptr)
 				{
 					reply.copy("no or bad response from Modbus device");
 				}
 			}
-			else
+			else if(resultVar == nullptr)
 			{
 				reply.copy("couldn't initiate Modbus transaction");
 			}
