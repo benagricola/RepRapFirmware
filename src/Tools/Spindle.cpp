@@ -117,47 +117,47 @@ GCodeResult Spindle::Configure(uint32_t spindleNumber, GCodeBuffer& gb, const St
 	{
 		state = SpindleState::stopped;
 		reprap.SpindlesUpdated();
+		return GCodeResult::ok;
 	}
-	else if (state == SpindleState::unconfigured)
+
+	if (state == SpindleState::unconfigured)
 	{
 		reply.printf("Spindle %lu is unconfigured", spindleNumber);
 		return GCodeResult::error;
 	}
-	else
+
+	reply.catf("Spindle %lu: ", spindleNumber);
+
+	if (state == SpindleState::forward || state == SpindleState::reverse)
 	{
-		reply.catf("Spindle %lu: ", spindleNumber);
-
-		if (state == SpindleState::forward || state == SpindleState::reverse)
-		{
-			reply.catf("running %s at %lu rpm, ", state.ToString(), GetCurrentRpm());
-		}
-
-		reply.catf("type %s", type.ToString());
-
-		bool isEnaDir = type == SpindleType::standard;
-
-		if (onOffPort.IsValid())
-		{
-			reply.cat(", ");
-			reply.catf(isEnaDir ? "enable" : "forward");
-			onOffPort.AppendBasicDetails(reply);
-		}
-
-		if (reverseNotForwardPort.IsValid())
-		{
-			reply.cat(", ");
-			reply.catf(isEnaDir? "direction" : "reverse");
-			reverseNotForwardPort.AppendBasicDetails(reply);
-		}
-
-		if (pwmPort.IsValid())
-		{
-			reply.cat(", rpm");
-			pwmPort.AppendFullDetails(reply);
-		}
-
-		reply.catf(", rpm min %ld, max %ld", minRpm, maxRpm);
+		reply.catf("running %s at %lu rpm, ", state.ToString(), GetCurrentRpm());
 	}
+
+	reply.catf("type %s", type.ToString());
+
+	bool isEnaDir = type == SpindleType::standard;
+
+	if (onOffPort.IsValid())
+	{
+		reply.cat(", ");
+		reply.catf(isEnaDir ? "enable" : "forward");
+		onOffPort.AppendBasicDetails(reply);
+	}
+
+	if (reverseNotForwardPort.IsValid())
+	{
+		reply.cat(", ");
+		reply.catf(isEnaDir? "direction" : "reverse");
+		reverseNotForwardPort.AppendBasicDetails(reply);
+	}
+
+	if (pwmPort.IsValid())
+	{
+		reply.cat(", rpm");
+		pwmPort.AppendFullDetails(reply);
+	}
+
+	reply.catf(", rpm min %ld, max %ld", minRpm, maxRpm);
 	return GCodeResult::ok;
 }
 
