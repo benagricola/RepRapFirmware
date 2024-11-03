@@ -479,10 +479,10 @@ bool GCodes::SpinGCodeBuffer(GCodeBuffer& gb) noexcept
 	{
 		if (gb.LatestMachineState().messageAcknowledged)
 		{
-			const bool wasCancelled = gb.LatestMachineState().messageCancelled;
+			const bool shouldAbort = gb.LatestMachineState().messageShouldAbort;
 			gb.PopState(true);											// this could fail if the current macro has already been aborted
 
-			if (wasCancelled)
+			if (shouldAbort)
 			{
 				if (gb.LatestMachineState().GetPrevious() == nullptr)
 				{
@@ -499,7 +499,7 @@ bool GCodes::SpinGCodeBuffer(GCodeBuffer& gb) noexcept
 					FileMacroCyclesReturn(gb);
 				}
 			}
-			result = wasCancelled;
+			result = shouldAbort;
 		}
 		else
 		{

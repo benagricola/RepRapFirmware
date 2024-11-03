@@ -33,7 +33,7 @@ constexpr ObjectModelTableEntry Spindle::objectModelTable[] =
 	{ "min",			OBJECT_MODEL_FUNC((int32_t)self->minRpm),					ObjectModelEntryFlags::verbose },
 	{ "minPwm",			OBJECT_MODEL_FUNC(self->minPwm, 2),							ObjectModelEntryFlags::verbose },
 	{ "state",			OBJECT_MODEL_FUNC(self->state.ToString()),					ObjectModelEntryFlags::live },
-	{ "type", 			OBJECT_MODEL_FUNC(self->type.ToString()),					ObjectModelEntryFlags::verbose },
+	{ "type",			OBJECT_MODEL_FUNC(self->type.ToString()),					ObjectModelEntryFlags::verbose },
 };
 
 constexpr uint8_t Spindle::objectModelTableDescriptor[] = { 1, 11 };
